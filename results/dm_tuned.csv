@@ -1,0 +1,46 @@
+item_id,asset_type,comparison,DM_stat,p,verdict
+sneakers_jordan1,sneakers,A_vs_B-original,-3.761,0.001,A 우수
+sneakers_jordan1,sneakers,A_vs_B-DH,-5.085,0.0,A 우수
+sneakers_jordan1,sneakers,B-original_vs_B-DH,-1.401,0.1745,차이 없음
+sneakers_panda,sneakers,A_vs_B-original,-1.4,0.1748,차이 없음
+sneakers_panda,sneakers,A_vs_B-DH,-1.675,0.1076,차이 없음
+sneakers_panda,sneakers,B-original_vs_B-DH,-0.787,0.4391,차이 없음
+sneakers_yeezy,sneakers,A_vs_B-original,-2.124,0.0446,A 우수
+sneakers_yeezy,sneakers,A_vs_B-DH,-2.127,0.0444,A 우수
+sneakers_yeezy,sneakers,B-original_vs_B-DH,0.199,0.8439,차이 없음
+sneakers_travis,sneakers,A_vs_B-original,-1.209,0.239,차이 없음
+sneakers_travis,sneakers,A_vs_B-DH,-0.688,0.4985,차이 없음
+sneakers_travis,sneakers,B-original_vs_B-DH,1.032,0.313,차이 없음
+sneakers_nb550,sneakers,A_vs_B-original,-0.041,0.9679,차이 없음
+sneakers_nb550,sneakers,A_vs_B-DH,-2.225,0.0362,A 우수
+sneakers_nb550,sneakers,B-original_vs_B-DH,-2.545,0.0181,B-original 우수
+cards_charizard1,cards,A_vs_B-original,-2.247,0.0346,A 우수
+cards_charizard1,cards,A_vs_B-DH,-1.356,0.1882,차이 없음
+cards_charizard1,cards,B-original_vs_B-DH,0.792,0.4363,차이 없음
+cards_charizard2,cards,A_vs_B-original,1.405,0.1735,차이 없음
+cards_charizard2,cards,A_vs_B-DH,1.886,0.072,경계
+cards_charizard2,cards,B-original_vs_B-DH,1.456,0.1589,차이 없음
+cards_umbreon,cards,A_vs_B-original,-0.061,0.9521,차이 없음
+cards_umbreon,cards,A_vs_B-DH,-0.251,0.8039,차이 없음
+cards_umbreon,cards,B-original_vs_B-DH,-0.341,0.7359,차이 없음
+cards_rayquaza,cards,A_vs_B-original,-0.529,0.6022,차이 없음
+cards_rayquaza,cards,A_vs_B-DH,-0.65,0.5222,차이 없음
+cards_rayquaza,cards,B-original_vs_B-DH,0.029,0.977,차이 없음
+cards_pikachu,cards,A_vs_B-original,0.854,0.4022,차이 없음
+cards_pikachu,cards,A_vs_B-DH,0.466,0.6454,차이 없음
+cards_pikachu,cards,B-original_vs_B-DH,-0.601,0.554,차이 없음
+lego_falcon,lego,A_vs_B-original,-2.984,0.0066,A 우수
+lego_falcon,lego,A_vs_B-DH,-3.5,0.0019,A 우수
+lego_falcon,lego,B-original_vs_B-DH,1.419,0.1694,차이 없음
+lego_hogwarts,lego,A_vs_B-original,0.246,0.8082,차이 없음
+lego_hogwarts,lego,A_vs_B-DH,0.241,0.8115,차이 없음
+lego_hogwarts,lego,B-original_vs_B-DH,0.151,0.8814,차이 없음
+lego_titanic,lego,A_vs_B-original,1.248,0.2247,차이 없음
+lego_titanic,lego,A_vs_B-DH,0.35,0.7293,차이 없음
+lego_titanic,lego,B-original_vs_B-DH,-0.536,0.5969,차이 없음
+lego_porsche,lego,A_vs_B-original,-2.327,0.0291,A 우수
+lego_porsche,lego,A_vs_B-DH,-0.974,0.34,차이 없음
+lego_porsche,lego,B-original_vs_B-DH,2.027,0.0544,경계
+lego_bugatti,lego,A_vs_B-original,-0.856,0.401,차이 없음
+lego_bugatti,lego,A_vs_B-DH,0.054,0.9574,차이 없음
+lego_bugatti,lego,B-original_vs_B-DH,2.018,0.0554,경계

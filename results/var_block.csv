@@ -1,0 +1,4 @@
+asset_type,lag,T_eff,F_stat,p,df_num,df_den,verdict
+sneakers,1,47,4.2897,0.000942,5,234,SIG
+cards,1,47,4.0072,0.001656,5,234,SIG
+lego,1,47,1.4527,0.206262,5,234,NS

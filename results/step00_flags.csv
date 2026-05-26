@@ -1,0 +1,23 @@
+﻿item_id,check,message
+sneakers_jordan1,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+sneakers_jordan1,GDELT_CH2_BLANK,blank 48/48 (100%) > 20%
+sneakers_jordan1,GDELT_CH3_BLANK,blank 48/48 (100%) > 20%
+sneakers_panda,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+sneakers_panda,GDELT_CH2_BLANK,blank 48/48 (100%) > 20%
+sneakers_panda,GDELT_CH3_BLANK,blank 48/48 (100%) > 20%
+sneakers_yeezy,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+sneakers_travis,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+sneakers_nb550,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+cards_charizard1,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+cards_umbreon,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+cards_rayquaza,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+cards_pikachu,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+cards_charizard2,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+lego_falcon,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+lego_falcon,PRICE_SPIKE,±50% 초과: ['2022-12']
+lego_hogwarts,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+lego_titanic,PRICE_LOWTX_CONSEC,tx_count<3 연속 48개월
+lego_titanic,PRICE_SPIKE,"±50% 초과: ['2025-02', '2025-11']"
+lego_porsche,PRICE_LOWTX_CONSEC,tx_count<3 연속 3개월
+lego_porsche,TRENDS_ZEROS,zero값 21/48 (44%) > 20%
+lego_bugatti,TRENDS_ZEROS,zero값 25/48 (52%) > 20%

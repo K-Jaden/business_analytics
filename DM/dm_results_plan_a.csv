@@ -1,0 +1,16 @@
+item_id,T,DM_stat,p,result
+sneakers_jordan1,6,-1.027,0.3515,유의미한 차이 없음
+sneakers_panda,6,-2.02,0.0993,Model A 우세(경계)
+sneakers_yeezy,6,-7.397,0.0007,Model A 우수
+sneakers_travis,6,-2.935,0.0324,Model A 우수
+sneakers_nb550,6,1.068,0.3341,유의미한 차이 없음
+cards_charizard1,6,-0.047,0.9644,유의미한 차이 없음
+cards_charizard2,6,1.159,0.2987,유의미한 차이 없음
+cards_umbreon,6,-0.562,0.5984,유의미한 차이 없음
+cards_rayquaza,6,-0.436,0.6811,유의미한 차이 없음
+cards_pikachu,6,-1.928,0.1118,유의미한 차이 없음
+lego_falcon,6,-0.167,0.8742,유의미한 차이 없음
+lego_hogwarts,6,2.023,0.099,Model B 우세(경계)
+lego_titanic,6,-0.613,0.5665,유의미한 차이 없음
+lego_porsche,6,-2.525,0.0528,Model A 우세(경계)
+lego_bugatti,6,0.216,0.8374,유의미한 차이 없음

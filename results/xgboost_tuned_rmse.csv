@@ -1,0 +1,16 @@
+item_id,asset_type,rmse_A,rmse_B_original,rmse_B_DH,T
+sneakers_jordan1,sneakers,20.64,34.05,35.76,24
+sneakers_panda,sneakers,37.01,43.21,45.02,24
+sneakers_yeezy,sneakers,15.48,21.67,21.5,24
+sneakers_travis,sneakers,193.1,227.35,215.7,24
+sneakers_nb550,sneakers,39.45,39.67,62.72,24
+cards_charizard1,cards,17.22,21.45,20.1,24
+cards_charizard2,cards,80.26,73.58,71.64,24
+cards_umbreon,cards,620.1,621.67,626.2,24
+cards_rayquaza,cards,226.19,230.54,230.36,24
+cards_pikachu,cards,26.42,24.2,25.14,24
+lego_falcon,lego,42.69,65.74,60.21,24
+lego_hogwarts,lego,24.06,23.66,23.34,24
+lego_titanic,lego,110.09,104.52,107.26,24
+lego_porsche,lego,15.31,16.98,16.24,24
+lego_bugatti,lego,10.09,11.32,10.0,24

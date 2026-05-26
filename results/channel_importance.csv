@@ -1,0 +1,13 @@
+# Channel Importance
+channel,sig_count,mean_F
+score_ch1,1,5.27
+score_ch3,1,5.065
+score_ch4,1,2.27
+score_ch2,0,0.866
+score_ch5,0,0.293
+
+# Jaccard Similarity (RQ2)
+asset1,asset2,jaccard,interpretation
+sneakers,cards,0.0,다름
+sneakers,lego,0.0,다름
+cards,lego,0.0,다름

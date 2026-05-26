@@ -1,0 +1,28 @@
+# 수집 원본 데이터 (재현 가능, 용량 큼)
+data/raw/
+
+# 노드 모듈
+node_modules/
+package-lock.json
+
+# 임시/잠금 파일
+~$*
+*.tmp
+
+# Python 캐시
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 환경변수
+.env
+*.env
+
+# Claude Code 로컬 설정
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

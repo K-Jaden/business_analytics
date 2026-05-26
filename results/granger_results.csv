@@ -1,0 +1,16 @@
+asset_type,channel,lag,F,p,verdict
+sneakers,score_ch1,2,3.4726,0.0407,MARGINAL
+sneakers,score_ch2,1,1.551,0.2197,NOT_SIGNIFICANT
+sneakers,score_ch3,1,13.3845,0.0007,SIGNIFICANT
+sneakers,score_ch4,1,4.7293,0.0352,SIGNIFICANT
+sneakers,score_ch5,1,0.0914,0.7639,NOT_SIGNIFICANT
+cards,score_ch1,1,8.4167,0.0058,SIGNIFICANT
+cards,score_ch2,1,0.7276,0.3984,NOT_SIGNIFICANT
+cards,score_ch3,1,1.4088,0.2418,NOT_SIGNIFICANT
+cards,score_ch4,1,0.2466,0.622,NOT_SIGNIFICANT
+cards,score_ch5,1,0.6143,0.4375,NOT_SIGNIFICANT
+lego,score_ch1,1,3.9217,0.0541,MARGINAL
+lego,score_ch2,1,0.3181,0.5757,NOT_SIGNIFICANT
+lego,score_ch3,1,0.4014,0.5297,NOT_SIGNIFICANT
+lego,score_ch4,1,1.8326,0.1829,NOT_SIGNIFICANT
+lego,score_ch5,1,0.1727,0.6797,NOT_SIGNIFICANT
