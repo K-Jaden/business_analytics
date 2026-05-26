@@ -23,6 +23,18 @@ venv/
 # Claude Code 로컬 설정
 .claude/
 
-# OS
+# LaTeX 빌드 산출물
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+
+# Python 캐시
+__pycache__/
+*.pyc
+
+# OS / Office 임시 파일
 .DS_Store
 Thumbs.db
+~$*
