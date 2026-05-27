@@ -77,15 +77,19 @@
 충격반응함수는 \emph{1\textasciitilde2개월 선행 + 4개월 내 감쇄}의
 공통 패턴을 보이되 부호가 정반대로 나타나, cards--CH1은 양(+10.80,
 1개월), sneakers--CH3는 음(-2.82, 1개월)의 가격 반응이 95\% 잔차 부트스트랩
-신뢰구간에서 0을 포함하지 않았다. XGBoost 예측 비교에서는 15개 아이템 중 11개(73\%)에서
-Granger 선별 모형(Model B)과 전채널 모형(Model A) 간 \emph{DM 검정상}
-통계적으로 유의한 차이가 없었으나, 자산별 평균 RMSE는 sneakers·lego에서
-Model A가 일관되게 낮고 2개 아이템(\textsf{jordan1}, \textsf{falcon})에서는
-Model A가 유의하게 우수하여, Granger 선별은 ``우수''보다 ``큰 손해 없이
-간결화 가능''에 가까운 절제된 해석을 지지한다(RQ3). SHAP 분석에서는 채널 변수의 절대
-기여도가 가격 모멘텀 변수보다 현저히 작았으며, Granger 순위와 SHAP 순위
-간 불일치가 관찰되었다. 이는 선형 인과성 검정과 비선형 예측 모형의 측정
-대상 차이에서 기인하며 \S\ref{sec:discussion-shapgranger}에서 다룬다.
+신뢰구간에서 0을 포함하지 않았다. XGBoost 예측 비교에서는 15개 아이템 중
+11개(73\%)에서 Granger 선별 모형(Model B)과 전채널 모형(Model A) 간
+\emph{DM 검정상} 통계적으로 유의한 차이가 없었으나, 자산별 평균 RMSE는
+sneakers·lego에서 Model A가 일관되게 낮고 2개 아이템(\textsf{jordan1},
+\textsf{falcon})에서는 Model A가 유의하게 우수하였다. 또한 절제 실험에서
+Granger 유의 채널을 제거해도 일부 자산의 AUC가 하락하지 않아, Granger
+유의성이 곧바로 표본 외(out-of-sample) 예측 유용성을 보장하지 않음을
+보였다(RQ3). 따라서 Granger 선별은 ``우수한 예측 변수 선택법''이라기보다
+``큰 손실 없이 채널 수를 줄일 수 있는 탐색적 축소 도구''로 해석하는 것이
+적절하다. SHAP 분석에서도 채널 변수의 절대 기여도는 가격 모멘텀 변수보다
+현저히 작았으며, Granger 순위와 SHAP 순위 간 불일치가 관찰되었다. 이는
+통계적 선행성과 비선형 예측 기여도가 서로 다른 측정 대상임을 보여 주며
+\S\ref{sec:discussion-shapgranger}에서 다룬다.
 표본 크기($N=48$)와 다중 검정 구조를 고려할 때, 본 연구의 결과는
 \emph{탐색적} 발견으로 해석되어야 한다.
 
@@ -137,15 +141,18 @@ BH-robust channels show a common short-lead pattern (peak at 1--2 months,
 decay within 4 months) but opposite signs: cards--CH1 produces a positive
 price response ($+10.80$ at horizon 1) while sneakers--CH3 produces a
 negative one ($-2.82$ at horizon 1), with 95\% residual-bootstrap CIs
-excluding zero in both cases. In XGBoost
-comparisons, 11 of 15 items (73\%) show no statistically significant
-difference between Granger-selected (Model B) and full-channel (Model A)
-models by DM test; however, asset-level mean RMSE consistently favors
-Model A for sneakers and LEGO, supporting a tempered interpretation that
-Granger selection reduces channel count without major predictive loss
-rather than achieving superiority (RQ3). Given the sample size ($N=48$)
-and multiple testing structure, all findings should be regarded as
-\emph{exploratory}.
+excluding zero in both cases. In XGBoost comparisons, 11 of 15 items
+(73\%) show no statistically significant difference between
+Granger-selected (Model B) and full-channel (Model A) models by DM test;
+however, asset-level mean RMSE consistently favors Model A for sneakers
+and LEGO, and two items significantly favor Model A. Additional ablation
+tests show that removing Granger-significant channels does not necessarily
+reduce AUC, indicating that Granger significance does not directly
+translate into out-of-sample predictive usefulness (RQ3). We therefore
+interpret Granger selection as an exploratory channel-reduction device
+rather than a superior feature-selection rule. Given the sample size
+($N=48$) and multiple testing structure, all findings should be regarded
+as \emph{exploratory}.
 
 \medskip\noindent
 \textbf{Keywords:} Resell market, Granger causality, Media leading
@@ -185,12 +192,12 @@ preismoatstanley2013}, 뉴스 텍스트의 감성과 수익률의 관계
   \item[\textbf{H2}] H1에서 유의로 판정된 채널 집합은 자산 유형 간에
         차별화된다. 자산쌍 간 Jaccard 유사도 $J<0.6$이 관찰된다.
   \item[\textbf{RQ3}] Granger 검정으로 선별된 채널만으로 학습한 예측
-        모형(Model B)은 전 채널을 사용한 모형(Model A)과 동등 또는
-        더 우수한 성능을 달성하는가?
+        모형(Model B)은 전 채널을 사용한 모형(Model A) 대비 표본 외
+        예측 성능을 큰 손실 없이 유지하는가?
   \item[\textbf{H3}] H1의 유의 채널만으로 구성한 Model B의 예측 오차는
-        Model A 대비 통계적으로 구분되지 않거나 더 작다.
-        Diebold--Mariano 검정에서 $p>0.10$(등가) 또는 $p<0.05$이고
-        Model B에 유리한 부호가 관찰된다.
+        Model A 대비 통계적으로 구분되지 않는다. 단, Model B가
+        유의하게 우수한 경우는 강한 지지로, Model A가 유의하게 우수한
+        경우는 Granger 선별의 정보 손실로 해석한다.
 \end{description}
 
 본 연구의 기여는 세 가지로 요약된다. 첫째, 자산 유형 단위에서 다섯
@@ -198,8 +205,9 @@ preismoatstanley2013}, 뉴스 텍스트의 감성과 수익률의 관계
 가능한 설계}를 제시한다. 둘째, 가격 시계열 외 \emph{모든 비가격 지표는
 사전에 점수 변환을 거쳐 동일 단위로 투입}함으로써, 이질적 데이터
 소스 간 직접 비교의 위험을 줄였다. 셋째, 통계적 인과성 검정과 XGBoost
-+ SHAP 예측 검증을 결합하여, \emph{선행성(causality lead)과 예측력
-(predictive utility)을 분리}하여 평가한다.
++ SHAP 예측 검증을 결합하여, \emph{통계적 선행성(causality lead)과
+표본 외 예측 유용성(out-of-sample predictive utility)이 반드시 일치하지
+않을 수 있음}을 리셀 시장 자료에서 탐색적으로 평가한다.
 
 % =====================================================================
 \section{관련 연구}\label{sec:related}
@@ -687,9 +695,12 @@ ROC--AUC를 산출한다. 둘째, \emph{예측 정확도의 통계적 등가성 
 
 \textbf{RQ3 판정 기준.}
 \begin{itemize}[leftmargin=1.4em, topsep=0pt, itemsep=0pt]
-  \item DM $p < 0.05$ \emph{이고} 부호가 Model B에 유리: \textbf{RQ3 지지}
+  \item DM $p < 0.05$ \emph{이고} 부호가 Model B에 유리: \textbf{강한 RQ3 지지}
         (선별 채널이 전 채널보다 우수).
-  \item DM $p > 0.10$: \textbf{간결성 확보}로 해석(통계적 등가).
+  \item DM $p > 0.10$: \textbf{약한 RQ3 지지}로 해석(통계적으로 구분되는
+        손실 없이 채널 수 축소).
+  \item DM $p < 0.05$ \emph{이고} 부호가 Model A에 유리: \textbf{RQ3 비지지}
+        (Granger 선별의 정보 손실).
   \item DM $p \in [0.05, 0.10)$: 경계 수준으로 보고.
 \end{itemize}
 
