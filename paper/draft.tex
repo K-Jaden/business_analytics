@@ -1598,6 +1598,22 @@ CH1이 2위이며, lego도 CH4가 채널 1위, CH1이 2위로 cards와 유사한
 아님을 보여 주며, 두 지표를 함께 보고함으로써 채널의 역할을 다각도로
 해석할 수 있다는 점에서 방법론적 기여가 있다.
 
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{../results/figures/ablation_auc.png}
+\caption[Ablation study: 9개 모델 AUC 비교]{\textbf{절제 실험(Ablation Study): 9개 채널 구성 모형의 자산별 AUC 비교.}
+각 막대는 TimeSeriesSplit($k=5$) 교차검증 평균 AUC를 나타낸다.
+\textbf{Model~A}(파랑, 점선 참조선)는 가격 래그 4개와 채널 5개 전부를 사용하는 기준 모형이며,
+\textbf{Channels-only}(회색, X 표시)는 가격 래그 없이 채널만 사용할 경우로
+AUC가 0.47--0.53에 불과하여 가격 래그가 예측의 핵심임을 확인한다.
+\textbf{A-dropGranger}(빨강)는 Granger 유의 채널을 제거한 절제 모형으로,
+cards에서 Model~A 대비 높은 AUC를 달성하였으며(\textbf{★}, DM $p=0.004$),
+sneakers에서는 유의한 차이가 없었다($p=0.916$).
+채널 하나만 포함한 CH-only 모형들도 Model~A와 통계적으로 동등하거나 우세하여,
+소표본(N=48) 환경에서 다채널 결합이 오히려 노이즈로 작용할 수 있음을 시사한다.}
+\label{fig:ablation}
+\end{figure*}
+
 \subsection{Model A 우수 예외 아이템 분석}
 \label{sec:discussion-exceptions}
 
