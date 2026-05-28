@@ -38,3 +38,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 ~$*
+
+# LaTeX 검토용 페이지 이미지 (빌드 산출물)
+paper/_review_pages/
+
+# 노트북 셀 출력 이미지 (재현 불필요)
+archive/shap_exports/
