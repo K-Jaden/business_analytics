@@ -44,9 +44,8 @@ INK = RGBColor(0x0A, 0x0A, 0x0A)
 
 # ── 데이터 ────────────────────────────────────────────────────────────────
 abl = pd.read_csv(os.path.join(RES, "ablation_results.csv"))
-# Model C: 평균 중요도 임계값 기준 (slide_rq3_dm_v3 / slide_shap_threshold 와 일치)
-mc = pd.read_csv(os.path.join(RES, "model_c_threshold_results.csv"))
-mc = mc[mc["rule"].str.contains("평균")]
+# Model C: 21쪽(Model A SHAP) 평균 임계값 선택 기준 (slide_shap_threshold / slide_rq3_dm 와 일치)
+mc = pd.read_csv(os.path.join(RES, "dm_fixed_selection.csv"))
 abl_auc = abl.pivot_table(index="model", columns="asset_type", values="auc")
 
 
@@ -210,6 +209,9 @@ text(s1, MARGIN + 0.15, BAN_T, 13.33 - 2 * MARGIN - 0.3, 0.40,
        (" → 적은 채널로 충분 (간결성)", 11.5, False, WHITE)]],
      anchor=MSO_ANCHOR.MIDDLE)
 
-prs.save(OUT)
-print(f"[OK] {OUT}  (slides={len(prs.slides._sldIdLst)})")
+for cand in ["slide_model_compare_clean.pptx", "slide_model_compare_clean_v2.pptx"]:
+    try:
+        prs.save(os.path.join(BASE, cand)); print(f"[OK] {cand}"); break
+    except PermissionError:
+        print(f"  (잠김: {cand} → 다음)")
 print("A:", A_auc, "B:", B_auc, "C:", C_auc, "N-A:", NA_auc)

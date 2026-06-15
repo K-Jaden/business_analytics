@@ -22,16 +22,16 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT  = os.path.join(BASE, "slide_rq3_dm_v3.pptx")
 
 # ── 모델별 AUC + DM 결과 ─────────────────────────────────────────────────
-# B = Granger raw p<0.05  /  C = SHAP 선별 채널 (평균 중요도 임계값)
-# DM (A vs C): results/model_c_threshold_results.csv (평균이상 규칙)
+# B = Granger raw p<0.05  /  C = SHAP 선별 채널 (Model A SHAP 평균 임계값, 21쪽 값 기준)
+# DM (A vs C): results/dm_fixed_selection.csv
 ASSETS_KR = ["스니커즈", "카드", "레고"]
 A_AUC = [0.8413, 0.8587, 0.9601]
 B_AUC = [0.8461, 0.8612, 0.9601]   # 스니커즈 †근사
-C_AUC = [0.8401, 0.8577, 0.9626]
+C_AUC = [0.8458, 0.8565, 0.9609]
 B_CH  = ["CH1+CH3+CH4 †", "CH1",     "없음(=A)"]
-C_CH  = ["CH1+CH5",        "CH4+CH5", "CH4+CH5"]
-# DM A vs C (asset level, 정확) — 평균 임계값 선별 기준
-C_DM_P = [0.678, 0.254, 0.646]
+C_CH  = ["CH1+CH5+CH4",    "CH4+CH1", "CH4+CH1"]
+# DM A vs C (asset level) — Model A SHAP 평균 임계값 선별 기준
+C_DM_P = [0.057, 0.356, 0.390]
 # DM A vs B (asset level 없음 → 표시 생략, 아이템별만 보유)
 
 # ── 색상 ─────────────────────────────────────────────────────────────────
@@ -85,8 +85,9 @@ for gi, (xc, p) in enumerate(zip(xs, C_DM_P)):
     ax.annotate("", xy=(x1, y_br), xytext=(x0, y_br),
                 arrowprops=dict(arrowstyle="-", color="#1A6E35",
                                 lw=1.5))
+    _mk = " (경계)" if 0.05 < p < 0.10 else ""
     ax.text(xc, y_br + 0.003,
-            f"DM p={p:.3f}  →  통계적 차이없음",
+            f"DM p={p:.3f}  →  통계적 차이없음{_mk}",
             ha="center", va="bottom", fontsize=9,
             color="#1A6E35", fontweight="bold")
 
@@ -186,8 +187,8 @@ add_text(sld, "문제: AUC 숫자 비교만으론 부족",
     EXP_L+0.15, EXP_T+0.60, EXP_W-0.30, 0.32,
     bold=True, size=11, color=NAVY)
 add_text(sld,
-    'A AUC = 0.841, C AUC = 0.840\n'
-    '→ "C가 약간 낮네?" 라고만 보임\n'
+    'A AUC ≈ C AUC (차이 0.00x 수준)\n'
+    '→ "거의 같은데?" 라고만 보임\n'
     '→ 이 차이가 우연인지, 진짜 차이인지 알 수 없음',
     EXP_L+0.15, EXP_T+0.93, EXP_W-0.30, 0.85,
     size=10.5, color=BLACK)
@@ -220,7 +221,7 @@ add_text(sld, "왜 이게 중요한가?",
     bold=True, size=11, color=NAVY)
 add_text(sld,
     "RQ3 핵심 주장:\n"
-    "\"5개 채널 대신 2개만 써도 충분하다\"\n\n"
+    "\"5개 채널 대신 2~3개만 써도 충분하다\"\n\n"
     "DM 검정 없이는 → 단순 AUC 비교\n"
     "DM 검정 있으면 → 통계적 동등성 입증\n"
     "= 간결성(parsimony) 근거 확보",
@@ -239,9 +240,9 @@ sld.shapes.add_picture(fig_buf,
 TBL_T = GRF_T + GRF_H + 0.10
 tbl_data = [
     ["자산", "A AUC\n(전채널)", "B AUC\n(Granger)", "C AUC\n(SHAP)", "DM A↔C\n통계량", "DM A↔C\np값", "판정"],
-    ["스니커즈", "0.8413", "0.8461 †", "0.8401", "-0.417", "0.678", "H₀ 기각 실패\n→ 동등"],
-    ["카드",     "0.8587", "0.8612",   "0.8577", "-1.145", "0.254", "H₀ 기각 실패\n→ 동등"],
-    ["레고",     "0.9601", "0.9601",   "0.9626", "+0.460", "0.646", "H₀ 기각 실패\n→ 동등"],
+    ["스니커즈", "0.8413", "0.8461 †", "0.8458", "+1.916", "0.057", "H₀ 기각 실패\n→ 동등(경계)"],
+    ["카드",     "0.8587", "0.8612",   "0.8565", "+0.926", "0.356", "H₀ 기각 실패\n→ 동등"],
+    ["레고",     "0.9601", "0.9601",   "0.9609", "+0.861", "0.390", "H₀ 기각 실패\n→ 동등"],
 ]
 SNK_BG = RGBColor(0xE3,0xF2,0xFD)
 CRD_BG = RGBColor(0xE8,0xF5,0xE9)
@@ -287,5 +288,8 @@ add_text(sld,
     0.30, 7.12, 12.85, 0.30,
     bold=True, size=10, color=WHITE, align=PP_ALIGN.CENTER)
 
-prs.save(OUT)
-print(f"[OK] {OUT}")
+for cand in [OUT, OUT.replace("_v3", "_v4"), OUT.replace("_v3", "_v5")]:
+    try:
+        prs.save(cand); print(f"[OK] {cand}"); break
+    except PermissionError:
+        print(f"  (잠김: {os.path.basename(cand)} → 다음)")

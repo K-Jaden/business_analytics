@@ -1,0 +1,4 @@
+﻿asset_type,selected,auc_A,auc_C,dm_stat,dm_p,verdict
+sneakers,CH1+CH5+CH4,0.8413,0.8458,1.916,0.0569,A better
+cards,CH4+CH1,0.8587,0.8565,0.926,0.3555,no diff
+lego,CH4+CH1,0.9601,0.9609,0.861,0.3903,no diff

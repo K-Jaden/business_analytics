@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-'평균 중요도 임계값' = 기준 점선  — 개념 설명 중심 슬라이드 (1장)
-핵심 비유: 반 평균 점수. 채널 5개 SHAP의 평균에 점선을 긋고, 그 위(초록)만 선택.
-데이터: results/model_c_channel_selection.csv, results/model_c_threshold_results.csv
+SHAP 채널 선택 — '평균 중요도 임계값(기준 점선)' (1장)
+발표자료 v3 SLIDE21 "SHAP이 밝힌 것" 의 구조·색·★·느낌을 그대로 가져오고,
+'평균 임계값(기준 점선)' 요소를 추가한 버전.
+값 = Model A SHAP (results/shap_summary.csv, 21쪽과 동일).
+선택 = 채널 평균 이상(above-mean) → ★ 표시. DM = results/dm_fixed_selection.csv.
 Usage : python scripts/make_slide_shap_threshold.py
-Output: slide_shap_threshold.pptx
+Output: slide_shap_threshold_v2.pptx
 """
 import os
 import io
 import numpy as np
+import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -21,7 +24,7 @@ from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(BASE, "slide_shap_threshold_v2.pptx")
+RES = os.path.join(BASE, "results")
 
 for f in ["Malgun Gothic", "맑은 고딕"]:
     if any(f.lower() in fn.name.lower() for fn in fm.fontManager.ttflist):
@@ -39,56 +42,76 @@ LGRAY = RGBColor(0xF4, 0xF6, 0xF9)
 INK = RGBColor(0x0A, 0x0A, 0x0A)
 
 CH = ["CH1", "CH2", "CH3", "CH4", "CH5"]
-SHAP = {
-    "스니커즈": {"CH1": 0.3081, "CH2": 0.0, "CH3": 0.0, "CH4": 0.1306, "CH5": 0.2236},
-    "카드":     {"CH1": 0.0588, "CH2": 0.0, "CH3": 0.0, "CH4": 0.3334, "CH5": 0.1145},
-    "레고":     {"CH1": 0.0778, "CH2": 0.0562, "CH3": 0.0045, "CH4": 0.2058, "CH5": 0.0925},
-}
-SELECTED = {"스니커즈": ["CH1", "CH5"], "카드": ["CH4", "CH5"], "레고": ["CH4", "CH5"]}
-DM_P = {"스니커즈": 0.678, "카드": 0.254, "레고": 0.646}
-ASSETS = ["스니커즈", "카드", "레고"]
-
-# ════════════════════════════════════════════════════════════════════════
-# 그래프 — 21쪽 스타일(채널별 색 + ★) + 기준 점선(평균)
-# ════════════════════════════════════════════════════════════════════════
+CH_KEY = {"CH1": "score_ch1", "CH2": "score_ch2", "CH3": "score_ch3",
+          "CH4": "score_ch4", "CH5": "score_ch5"}
 CH_COLOR = {"CH1": "#1F8FE0", "CH2": "#E08A20", "CH3": "#9AA0A6",
             "CH4": "#E8B62C", "CH5": "#C0392B"}
-CH_NAME = {"CH1": "GT", "CH2": "뉴스량", "CH3": "뉴스감성", "CH4": "YT조회", "CH5": "YT감성"}
+CH_NAME = {"CH1": "GT(검색량)", "CH2": "뉴스량", "CH3": "뉴스감성",
+           "CH4": "YT조회", "CH5": "YT감성"}
+ASSET_KEY = {"스니커즈": "sneakers", "카드": "cards", "레고": "lego"}
+ASSETS = ["스니커즈", "카드", "레고"]
 
-fig, axes = plt.subplots(1, 3, figsize=(8.6, 2.95), dpi=200)
+# ── Model A SHAP 값 (results/shap_summary.csv = 21쪽과 동일) ────────────────
+_sh = pd.read_csv(os.path.join(RES, "shap_summary.csv"))
+_sh = _sh[_sh["model"] == "Model A"]
+SHAP = {}
+for kr, a in ASSET_KEY.items():
+    sub = _sh[_sh["asset_type"] == a].set_index("feature")["mean_abs_shap"]
+    SHAP[kr] = {ch: float(sub.get(CH_KEY[ch], 0.0)) for ch in CH}
+
+# 평균 임계값(above-mean) 선택
+SELECTED = {}
+for kr in ASSETS:
+    d = SHAP[kr]
+    m = sum(d.values()) / len(CH)
+    SELECTED[kr] = [ch for ch in sorted(CH, key=lambda c: d[c], reverse=True) if d[ch] >= m]
+
+# DM 결과 (고정 선택 기준)
+_dm = pd.read_csv(os.path.join(RES, "dm_fixed_selection.csv")).set_index("asset_type")
+DM_P = {kr: float(_dm.loc[a, "dm_p"]) for kr, a in ASSET_KEY.items()}
+
+# ════════════════════════════════════════════════════════════════════════
+# 그래프 — 21쪽 스타일(채널별 색 + ★ + 색-이름 범례) + 기준 점선(평균)
+# ════════════════════════════════════════════════════════════════════════
+fig, axes = plt.subplots(1, 3, figsize=(9.6, 3.05), dpi=200)
 for ax, asset in zip(axes, ASSETS):
     d = SHAP[asset]
     vals = [d[c] for c in CH]
+    mx = max(vals) if max(vals) > 0 else 1.0
     mean_imp = sum(vals) / len(CH)
     sel_set = set(SELECTED[asset])
     xpos = np.arange(len(CH))
     for xi, c in zip(xpos, CH):
         sel = c in sel_set
-        ax.bar(xi, d[c], width=0.70, color=CH_COLOR[c],
-               alpha=1.0 if sel else 0.30, edgecolor="white", linewidth=0.6, zorder=3)
-        ax.text(xi, d[c] + max(vals) * 0.03, f"{d[c]:.2f}", ha="center", va="bottom",
-                fontsize=7.5, fontweight="bold" if sel else "normal",
+        ax.bar(xi, d[c], width=0.72, color=CH_COLOR[c],
+               alpha=1.0 if sel else 0.32, edgecolor="white", linewidth=0.6, zorder=3)
+        ax.text(xi, d[c] + mx * 0.03, f"{d[c]:.3f}", ha="center", va="bottom",
+                fontsize=7, fontweight="bold" if sel else "normal",
                 color="#222222" if sel else "#9AA0A6")
         if sel:
-            ax.text(xi, d[c] + max(vals) * 0.13, "★", ha="center", va="bottom",
-                    fontsize=10, color="#E8730F", zorder=4)
-    # 기준 점선 (평균) — 강조. 라벨은 중앙(CH3, 값≈0) 위 빈 공간에 배치해 막대 값과 겹침 방지
+            ax.text(xi, d[c] + mx * 0.14, "★", ha="center", va="bottom",
+                    fontsize=10.5, color="#2E6DA4", zorder=4)
     ax.axhline(mean_imp, color="#E8730F", linestyle="--", linewidth=1.8, zorder=5)
-    ax.text(2, mean_imp + max(vals) * 0.04, f"기준선 {mean_imp:.2f}",
-            color="#E8730F", fontsize=7.5, fontweight="bold", ha="center", va="bottom", zorder=6)
+    ax.text(2, mean_imp + mx * 0.04, f"기준선 {mean_imp:.3f}",
+            color="#E8730F", fontsize=7, fontweight="bold", ha="center", va="bottom", zorder=6)
     ax.set_xticks(xpos)
     ax.set_xticklabels(CH, fontsize=8.5)
     ax.set_title(f"{asset}  →  {'+'.join(SELECTED[asset])}",
-                 fontsize=10.5, fontweight="bold", pad=12, color="#1F2D4E")
-    ax.set_ylim(0, max(vals) * 1.34)
+                 fontsize=10.5, fontweight="bold", pad=14, color="#1F2D4E")
+    ax.set_ylim(0, mx * 1.36)
     ax.set_xlim(-0.7, len(CH) - 0.3)
     ax.spines[["top", "right"]].set_visible(False)
     ax.tick_params(axis="y", labelsize=7)
-fig.suptitle("채널별 평균|SHAP|  —  ★ = 기준 점선(채널 평균) 위 → 선택 · 흐린 막대 = 탈락",
-             fontsize=10.5, fontweight="bold", y=1.06, color="#1F2D4E")
-plt.tight_layout()
+# 색-이름 범례 (21쪽 느낌)
+from matplotlib.patches import Patch
+handles = [Patch(facecolor=CH_COLOR[c], label=f"{c} {CH_NAME[c]}") for c in CH]
+fig.legend(handles=handles, loc="lower center", ncol=5, fontsize=8.5,
+           frameon=False, bbox_to_anchor=(0.5, -0.04))
+fig.suptitle("SHAP 채널 중요도 (Model A 기준)  ·  ★ = 기준 점선(채널 평균) 이상 → 선택",
+             fontsize=11, fontweight="bold", y=1.04, color="#1F2D4E")
+plt.tight_layout(rect=[0, 0.06, 1, 1])
 fig_buf = io.BytesIO()
-fig.savefig(fig_buf, dpi=200, bbox_inches="tight", facecolor="white")
+fig.savefig(fig_buf, dpi=195, bbox_inches="tight", facecolor="white")
 plt.close(fig)
 
 # ════════════════════════════════════════════════════════════════════════
@@ -138,79 +161,77 @@ def header(sld, title, subtitle_runs):
 
 
 s1 = prs.slides.add_slide(prs.slide_layouts[6])
-header(s1, "채널 선택 기준 = '평균 중요도 임계값' (기준 점선)",
-       [("채널 5개 SHAP의 ", 13, False, DGRAY), ("평균에 점선을 긋고, 그 위만 선택", 13, True, ORANGE),
+header(s1, "SHAP이 밝힌 것 — 채널 선택 기준은 '평균(기준 점선)'",
+       [("채널 5개 SHAP의 평균에 점선을 긋고 ", 13, False, DGRAY),
+        ("그 위(★)만 선택", 13, True, ORANGE),
         (" — 반 평균 점수와 같은 원리", 13, False, DGRAY)])
 
 MARGIN = 0.30
 
-# ── 좌측: 개념 설명 (반 평균 비유) ────────────────────────────────────────
-EXP_T, EXP_W, EXP_H = 1.30, 4.30, 3.82
-box(s1, MARGIN, EXP_T, EXP_W, EXP_H, fill=RGBColor(0xEA, 0xF1, 0xFA), line=BLUE, line_w=1.0, round_=True)
-text(s1, MARGIN + 0.18, EXP_T + 0.12, EXP_W - 0.36, 0.40,
-     [[("'평균 중요도 임계값'이란?", 14, True, BLUE)]])
-text(s1, MARGIN + 0.18, EXP_T + 0.60, EXP_W - 0.36, EXP_H - 0.72,
-     [[("반 평균 점수와 똑같은 원리", 12, True, ORANGE)]],
-     space=4)
-text(s1, MARGIN + 0.18, EXP_T + 0.98, EXP_W - 0.36, EXP_H - 1.10,
-     [[("①  채널 5개의 SHAP(기여도) 점수를", 11.5, False, INK)],
-      [("     모두 더해 5로 나눔 → ", 11.5, False, INK), ("평균", 11.5, True, GREEN)],
-      [("", 5, False, INK)],
-      [("②  그 평균값에 ", 11.5, False, INK), ("기준 점선", 11.5, True, ORANGE), ("을 그음", 11.5, False, INK)],
-      [("", 5, False, INK)],
-      [("③  점선보다 ", 11.5, False, INK), ("위 = 선택", 11.5, True, GREEN),
-       (" / ", 11.5, False, INK), ("아래 = 탈락", 11.5, True, RGBColor(0x99, 0x99, 0x99))],
-      [("", 7, False, INK)],
-      [("핵심: 내가 '2개'라고 정하는 게 아니라", 11, True, NAVY)],
-      [("점선(평균)이 개수를 자동으로 정함", 11, True, NAVY)],
-      [("→ 임의성 없는 객관적 기준", 11, False, DGRAY)]],
-     space=3)
-
-# ── 우측: 그래프 (기준 점선 주인공) ───────────────────────────────────────
-FIG_X = MARGIN + EXP_W + 0.24
-FIG_W = 13.33 - MARGIN - FIG_X
-FIG_T = 1.30
-FIG_BOX_H = 3.82
-box(s1, FIG_X, FIG_T, FIG_W, FIG_BOX_H, fill=LGRAY, line=RGBColor(0xCF, 0xD6, 0xDF), line_w=1.0, round_=True)
+# ── 그래프 (상단, 전폭) ────────────────────────────────────────────────────
+FIG_T, FIG_W, FIG_H = 1.32, 13.33 - 2 * MARGIN, 3.66
+box(s1, MARGIN, FIG_T, FIG_W, FIG_H, fill=LGRAY, line=RGBColor(0xCF, 0xD6, 0xDF), line_w=1.0, round_=True)
 from PIL import Image as _PILImage
 fig_buf.seek(0)
 _w_px, _h_px = _PILImage.open(fig_buf).size
 ratio = _h_px / _w_px
-pic_w = FIG_W - 0.26
+pic_w = FIG_W - 0.30
 pic_h = pic_w * ratio
-if pic_h > FIG_BOX_H - 0.22:
-    pic_h = FIG_BOX_H - 0.22
+if pic_h > FIG_H - 0.20:
+    pic_h = FIG_H - 0.20
     pic_w = pic_h / ratio
 fig_buf.seek(0)
-s1.shapes.add_picture(fig_buf, Inches(FIG_X + (FIG_W - pic_w) / 2), Inches(FIG_T + 0.12),
+s1.shapes.add_picture(fig_buf, Inches(MARGIN + (FIG_W - pic_w) / 2), Inches(FIG_T + 0.10),
                       width=Inches(pic_w))
 
-# ── 하단: 결과 + DM 동등 ──────────────────────────────────────────────────
-RES_T = EXP_T + EXP_H + 0.18
-RES_H = 7.5 - RES_T - 0.62
-box(s1, MARGIN, RES_T, 13.33 - 2 * MARGIN, RES_H, fill=RGBColor(0xE7, 0xF2, 0xE9),
-    line=GREEN, line_w=1.0, round_=True)
-text(s1, MARGIN + 0.18, RES_T + 0.08, 13.33 - 2 * MARGIN - 0.36, 0.32,
-     [[("기준선을 적용한 결과", 12.5, True, GREEN)]])
-text(s1, MARGIN + 0.18, RES_T + 0.42, 13.33 - 2 * MARGIN - 0.36, RES_H - 0.50,
-     [[("•  세 자산 모두 ", 11.5, False, INK), ("기준선 위 채널이 정확히 2개씩", 11.5, True, GREEN),
-       (" 선택됨  —  스니커즈 CH1+CH5 · 카드 CH4+CH5 · 레고 CH4+CH5", 11.5, False, INK)],
-      [("•  선택 모델(2채널)을 전채널(5채널) 모델과 DM 검정 비교 → ", 11.5, False, INK),
-       ("셋 다 동등", 11.5, True, GREEN),
-       (f"  (스니커즈 p={DM_P['스니커즈']:.3f} · 카드 p={DM_P['카드']:.3f} · 레고 p={DM_P['레고']:.3f})", 11.5, False, INK)],
-      [("※ 방법 출처: ", 9.5, False, DGRAY),
-       ("scikit-learn SelectFromModel 기본 기준(threshold='mean')", 9.5, True, BLUE),
-       ("  ·  Wang, Liang, Hancock & Khoshgoftaar (2024), Journal of Big Data 11(1):44", 9.5, False, DGRAY)]],
-     space=6)
+# ── 하단: 자산별 박스 3개 (21쪽 구조) ──────────────────────────────────────
+BOX_T = FIG_T + FIG_H + 0.16
+BOX_H = 1.62
+GAP = 0.20
+BOX_W = (13.33 - 2 * MARGIN - 2 * GAP) / 3
+ASSET_BAR = {"스니커즈": BLUE, "카드": GREEN, "레고": RGBColor(0x7B, 0x3F, 0xA0)}
+CH_FULL = {"CH1": "Google Trends", "CH2": "뉴스 보도량", "CH3": "뉴스 감성",
+           "CH4": "YT 조회수", "CH5": "YT 댓글감성"}
+for i, asset in enumerate(ASSETS):
+    x = MARGIN + i * (BOX_W + GAP)
+    box(s1, x, BOX_T, BOX_W, BOX_H, fill=LGRAY, line=RGBColor(0xCF, 0xD6, 0xDF), line_w=1.0, round_=True)
+    box(s1, x, BOX_T, BOX_W, 0.40, fill=ASSET_BAR[asset], round_=True)
+    text(s1, x, BOX_T + 0.02, BOX_W, 0.36,
+         [[(f"{asset}  →  선택 {len(SELECTED[asset])}개", 12, True, WHITE)]],
+         align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+    runs = []
+    for rank, ch in enumerate(SELECTED[asset], 1):
+        runs.append([("★ ", 10.5, True, BLUE), (f"{ch} {CH_FULL[ch]}", 10.5, True, NAVY),
+                     (f"  ({SHAP[asset][ch]:.3f})", 10, False, DGRAY)])
+    p = DM_P[asset]
+    mark = " (경계)" if 0.05 < p < 0.10 else ""
+    runs.append([("DM vs 전채널  p=", 9.5, False, INK), (f"{p:.3f}", 9.5, True, GREEN),
+                 (f" → 동등{mark}", 9.5, False, INK)])
+    text(s1, x + 0.16, BOX_T + 0.48, BOX_W - 0.32, BOX_H - 0.56, runs, space=5)
 
-# ── 결론 배너 ─────────────────────────────────────────────────────────────
+# ── 출처 + 결론 ────────────────────────────────────────────────────────────
+SRC_T = BOX_T + BOX_H + 0.10
+text(s1, MARGIN + 0.04, SRC_T, 13.33 - 2 * MARGIN, 0.26,
+     [[("※ 값 = Model A SHAP 기여도(전채널 동시 투입) · 선택 기준 = ", 9.5, False, DGRAY),
+       ("평균 중요도 임계값 (scikit-learn SelectFromModel 기본값 threshold='mean')", 9.5, True, BLUE),
+       (" · Wang et al. (2024), J. Big Data 11:44", 9.5, False, DGRAY)]])
+
 BAN_T = 7.5 - 0.52
 box(s1, MARGIN, BAN_T, 13.33 - 2 * MARGIN, 0.40, fill=NAVY)
 text(s1, MARGIN + 0.15, BAN_T, 13.33 - 2 * MARGIN - 0.3, 0.40,
      [[("결론  ", 12.5, True, WHITE),
        ("'평균(기준 점선)보다 기여가 큰 채널만 남긴다'", 11.5, True, WHITE),
-       ("는 객관적 규칙 → 자산별 2채널로도 전채널과 동등 → 간결성 입증", 11.5, False, WHITE)]],
+       ("는 객관적 규칙 → 선별 모델이 전채널과 통계적으로 동등 → 간결성 입증", 11.5, False, WHITE)]],
      anchor=MSO_ANCHOR.MIDDLE)
 
-prs.save(OUT)
-print(f"[OK] {OUT}  (slides={len(prs.slides._sldIdLst)})")
+for cand in ["slide_shap_threshold_v2.pptx", "slide_shap_threshold_v3.pptx",
+             "slide_shap_threshold_v4.pptx"]:
+    try:
+        prs.save(os.path.join(BASE, cand))
+        print(f"[OK] {cand}  (slides={len(prs.slides._sldIdLst)})")
+        break
+    except PermissionError:
+        print(f"  (잠김: {cand} → 다음 이름)")
+print("SHAP:", {k: {c: round(v, 3) for c, v in d.items()} for k, d in SHAP.items()})
+print("SELECTED:", SELECTED)
+print("DM_P:", DM_P)

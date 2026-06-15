@@ -54,6 +54,7 @@ group_gap = 1.2
 bar_w = 0.8
 xs, heights, colors, labels, ps = [], [], [], [], []
 xticks, xticklabels = [], []
+show_p = []
 x0 = 0
 for a in assets:
     rows = [d for d in data if d[0] == a]
@@ -64,6 +65,8 @@ for a in assets:
         colors.append(COLOR[verdict])
         labels.append(ch)
         ps.append(p)
+        # p값 라벨: 유의(SIG) 막대 + 레고 CH1(경계, p=0.054)만 표시
+        show_p.append(verdict == "SIG" or (asset == "레고" and ch == "CH1"))
         x0 += 1
     xticks.append((start + x0 - 1) / 2)
     xticklabels.append(a)
@@ -71,10 +74,11 @@ for a in assets:
 
 bars = ax.bar(xs, heights, width=bar_w, color=colors, edgecolor="white")
 
-for i, (x, h, lab, p) in enumerate(zip(xs, heights, labels, ps)):
-    p_txt = "p<0.001" if p < 0.001 else f"p={p:.3f}"
-    off = 0.06 if (i % 2 == 0) else 0.24   # 인접 막대 라벨 겹침 방지(높이 비슷한 경우 교대 배치)
-    ax.text(x, h + off, p_txt, ha="center", va="bottom", fontsize=8.5, fontweight="bold")
+for i, (x, h, lab, p, sp) in enumerate(zip(xs, heights, labels, ps, show_p)):
+    if sp:
+        p_txt = "p<0.001" if p < 0.001 else f"p={p:.3f}"
+        off = 0.06 if (i % 2 == 0) else 0.24   # 인접 막대 라벨 겹침 방지(높이 비슷한 경우 교대 배치)
+        ax.text(x, h + off, p_txt, ha="center", va="bottom", fontsize=8.5, fontweight="bold")
     ax.text(x, -0.12, lab, ha="center", va="top", fontsize=9, color="#444444")
 
 # 단일 기준선 (lag와 무관) — 색상과 높이가 그대로 일치
