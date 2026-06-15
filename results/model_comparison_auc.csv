@@ -1,0 +1,13 @@
+﻿asset_type,model,auc
+sneakers,XGBoost,0.8413
+sneakers,CatBoost,0.9604
+sneakers,RandomForest,0.9234
+sneakers,ElasticNet,0.6009
+cards,XGBoost,0.8587
+cards,CatBoost,0.9749
+cards,RandomForest,0.9521
+cards,ElasticNet,0.6631
+lego,XGBoost,0.9601
+lego,CatBoost,0.9563
+lego,RandomForest,0.9374
+lego,ElasticNet,0.7055

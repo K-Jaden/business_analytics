@@ -1,0 +1,4 @@
+﻿asset_type,auc_A,auc_C,delta_auc,dm_stat,dm_p,verdict,top_channels,n_top
+sneakers,0.8413,0.8401,-0.0012,-0.417,0.6775,no diff,"score_ch1(5/5), score_ch5(4/5), score_ch2(1/5)",2
+cards,0.8587,0.859,0.0003,-0.67,0.504,no diff,"score_ch4(4/5), score_ch1(3/5), score_ch5(2/5), score_ch2(1/5)",2
+lego,0.9601,0.9626,0.0025,0.46,0.6459,no diff,"score_ch5(4/5), score_ch4(3/5), score_ch1(3/5)",2

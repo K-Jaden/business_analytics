@@ -1,0 +1,4 @@
+﻿asset_type,channel_shap_total,cum80_channels,cum80_n,above_mean_channels,above_mean_n,CH1,CH2,CH3,CH4,CH5
+sneakers,0.6624,CH1+CH5,2,CH1+CH5,2,0.3081,0.0,0.0,0.1306,0.2236
+cards,0.5067,CH4+CH5,2,CH4+CH5,2,0.0588,0.0,0.0,0.3334,0.1145
+lego,0.4368,CH4+CH5+CH1,3,CH4+CH5,2,0.0778,0.0562,0.0045,0.2058,0.0925

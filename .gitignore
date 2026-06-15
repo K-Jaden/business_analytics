@@ -44,3 +44,19 @@ paper/_review_pages/
 
 # 노트북 셀 출력 이미지 (재현 불필요)
 archive/shap_exports/
+
+# CatBoost 학습 로그 (자동 생성)
+catboost_info/
+
+# 외부 참고문헌 PDF (저작권 — 리포에 포함하지 않음)
+/c.pdf
+/KCI_FI003000185.pdf
+
+# 슬라이드 작업 중 임시 미리보기/덤프 (재현 불필요)
+/_imgs/
+/_flat_preview.png
+/_slide21_img.png
+/final_check.txt
+/s18_detail.txt
+/jacc2.txt
+*.bak

@@ -1,0 +1,7 @@
+﻿asset_type,rule,threshold,auc_A,auc_C,delta_auc,dm_stat,dm_p,verdict,n_min,n_max,n_mean,global_sel,fold_freq
+sneakers,누적80%,0.8,0.8413,0.8401,-0.0012,-0.417,0.6775,no diff,1,2,1.8,CH1+CH5,"CH1(5/5), CH5(4/5)"
+sneakers,평균이상(SelectFromModel 기본),0.8,0.8413,0.8401,-0.0012,-0.417,0.6775,no diff,1,2,1.8,CH1+CH5,"CH1(5/5), CH5(4/5)"
+cards,누적80%,0.8,0.8587,0.8577,-0.001,-1.613,0.1085,no diff,1,3,2.0,CH4+CH5,"CH1(4/5), CH4(4/5), CH5(2/5)"
+cards,평균이상(SelectFromModel 기본),0.8,0.8587,0.8577,-0.001,-1.145,0.2537,no diff,1,3,1.8,CH4+CH5,"CH4(4/5), CH1(3/5), CH5(2/5)"
+lego,누적80%,0.8,0.9601,0.9624,0.0023,2.334,0.0207,A better,2,3,2.8,CH4+CH5+CH1,"CH4(5/5), CH5(5/5), CH1(4/5)"
+lego,평균이상(SelectFromModel 기본),0.8,0.9601,0.9626,0.0025,0.46,0.6459,no diff,2,2,2.0,CH4+CH5,"CH5(4/5), CH4(3/5), CH1(3/5)"
