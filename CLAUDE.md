@@ -24,11 +24,13 @@
 - [x] 05 채널 점수 산출 (FinBERT 포함, 전체 15개 아이템)
 - [x] 06 패널 통합 + 자산별 대표 시계열 생성
 - [x] 07 ADF 정상성 검정
-- [x] 08 Granger 검정 (RQ1·RQ2) — 15회 완료 (raw p 기준, BH 보정 미적용)
+- [x] 08 Granger 검정 (RQ1·RQ2) — 15회 완료 (raw p 기준 + BH 보정 부록 병기)
+- [x] 08+ 강건성 확장 — 래그 견고성(CH5 지연 효과 발견) · Dumitrescu–Hurlin 패널 Granger · VAR 블록 인과 · 충격반응함수(IRF)
 - [x] 09 XGBoost + SHAP + DM 검정 (RQ3) — 완료 (팀원 진행, 결과 수신 완료)
+- [x] 09+ 추가 검증 — Model C(SHAP 폴드 내 선별) · 벤치마크 비교(CatBoost·랜덤포레스트·선형) · 절제(ablation) 실험
 
-마지막 업데이트: 2026-05-18
-다음 재개 위치: **전체 완료** — `paper/draft.tex` (19쪽, 참고문헌 27개) 컴파일 완료, PDF 생성됨
+마지막 업데이트: 2026-06-15
+다음 재개 위치: **전체 완료** — `paper/draft.tex` (35쪽 규모, 2,358줄). 논문·`slide_shap_threshold_v3.pptx` 둘 다 미커밋 상태. 다음 = 투고처 결정
 
 ### Granger 최종 결과 (raw p 기준, p<0.05 단일 판정 기준 — 2026-05-18 확정)
 > ※ 기존 F≥4.0 임계 제거. p<0.05만 SIGNIFICANT.
@@ -42,7 +44,13 @@
 | lego | CH1 Google Trends | 1 | 3.92 | 0.054 | MARGINAL |
 | 나머지 10개 | — | — | <2 | >0.18 | NOT_SIG |
 
-**BH 보정 후:** SIGNIFICANT 4개→2개 (sneakers CH3, cards CH1만 생존). 부록 표 9에 병기.
+**BH 보정 후:** SIGNIFICANT 4개→2개 (sneakers CH3, cards CH1만 생존). 부록 A에 병기.
+
+**강건성 확장 결과 (08+):**
+- 래그 견고성: sneakers CH3는 3개 래그 견고. sneakers CH5는 L=1 무의미 → L=2,3에서 유의(지연 효과 신규 발견).
+- DH 패널 Granger: 자산평균·DH 양쪽에서 BH 보정 후 일관 유의는 **cards–CH1 한 조합**. sneakers–CH3는 DH에서 비유의로 약화(평균 집계 증폭 가능성).
+- VAR 블록 인과(다중공선성 통제): 3개 검정 모두 BH 생존은 cards–CH1뿐.
+- IRF: 둘 다 1~2개월 선행 + 4개월 내 감쇄. 부호 정반대 — cards–CH1 양(+10.80), sneakers–CH3 음(−2.82), 95% 부트스트랩 CI가 0 미포함.
 
 Jaccard:
 - sneakers={CH1,CH3,CH4}, cards={CH1}, lego={}
@@ -54,15 +62,21 @@ Jaccard:
 - 15개 중 11개(73%): 차이 없음 → RQ3 간결성 확보
 - Model A 유의 우수: sneakers_jordan1(p<0.001), lego_falcon(p=0.032)
 - RMSE 평균: sneakers A=452/B=569, lego A=176/B=199 → Model A 우세
+- 절제(ablation): Granger 유의 채널 제거해도 일부 자산 AUC 미하락 → "Granger 유의 ≠ 표본 외 예측 유용성" 결론
 
 **SHAP (분류 기준, Model A):**
 - sneakers: CH1(0.125) > CH5(0.124) > CH4(0.080) > CH3(0.011)
 - cards: CH4(0.091) > CH1(0.048) > CH2(0.031)
 - lego: CH4(0.070) > CH1(0.036) > CH5(0.021)
 
+**Model C (폴드 내 SHAP 상위 2채널) / 벤치마크 (09+):**
+- Model C: 세 자산 모두 Model A와 DM상 구분 안 됨 → SHAP 선별도 간결성 확보 재확인
+- 벤치마크(CatBoost·랜덤포레스트·선형): 트리 앙상블이 선형 기준선 상회, sneakers·cards에서 우세
+
 ### 논문 현황
-- `paper/draft.tex`: 19쪽, 참고문헌 27개, 컴파일 완료 (2026-05-18)
-- 엄격 평가 점수: **71.5/100** (학부 A+, KCI minor revision 가능)
+- `paper/draft.tex`: 약 35쪽, 2,358줄 (DH·VAR·IRF·Model C·벤치마크 편입본)
+- 구조: 서론·관련연구·방법론(Granger/DH/Jaccard/ML)·결과(RQ1~3+강건성)·논의·결론·부록 4종(BH/아이템이력/상관행렬/재현성)
+- 상태: 논문·발표자료(slide_shap_threshold_v3.pptx) 둘 다 **미커밋**
 
 ### 소스 변경 이력
 - 레고: PriceCharting → BrickRanker (PriceCharting LEGO는 2023-11 이후 데이터만 존재)

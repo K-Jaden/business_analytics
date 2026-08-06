@@ -60,3 +60,15 @@ catboost_info/
 /s18_detail.txt
 /jacc2.txt
 *.bak
+
+# ===== 이력서용 정리 (2026-08) =====
+# 사장된 시도·구버전 (로컬 보관, 원격 미포함)
+/archive/
+scripts/archive/
+scripts/_*.py
+
+# 발표자료 pptx — 25MB급 바이너리라 저장소에 두지 않음 (로컬 보관)
+*.pptx
+
+# 슬라이드 작업 중 캡처
+/스크린샷*.png
